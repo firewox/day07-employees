@@ -120,5 +120,12 @@ class EmployeeControllerTests {
                 .andExpect(jsonPath("$.gender").value("Male"));
     }
 
-
+    @Test
+    void should_return_not_content_when_delete_an_employee() throws Exception {
+        //Given
+        Employee targetEmployee = employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        MockHttpServletRequestBuilder request = delete("/employees/"+targetEmployee.id()).contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request).andExpect(status().isNoContent());
+    }
 }

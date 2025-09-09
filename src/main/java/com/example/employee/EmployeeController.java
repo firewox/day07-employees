@@ -1,5 +1,6 @@
 package com.example.employee;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,12 @@ public class EmployeeController {
             }
         }
         return indexEmployees;
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        employees = employees.stream().filter(e -> !e.id().equals(id)).collect(Collectors.toList());
     }
 
     public void clear() {
