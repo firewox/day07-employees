@@ -30,9 +30,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Employee updateEmployee(@RequestBody Employee employee) {
-        List<Employee> employeeList = employees.stream().filter(e->{
-            return !e.id().equals(employee.id());
-        }).collect(Collectors.toList());
+        List<Employee> employeeList = employees.stream().filter(e -> !e.id().equals(employee.id())).collect(Collectors.toList());
         employeeList.add(employee);
         return employee;
     }
@@ -49,20 +47,16 @@ public class EmployeeController {
 
     @GetMapping()
     public List<Employee> index(@RequestParam(required = false) String gender, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+        List<Employee> resultEmployees = employees;
         if (!Objects.isNull(page) && !Objects.isNull(size)) {
             page = page <= 0 ? 1 : page;
-            return employees.stream().skip((page - 1) * size).limit(size).collect(Collectors.toList());
+            size = size < 0 ? 0 : size;
+            resultEmployees = employees.stream().skip(size * (long) (page - 1)).limit(size).collect(Collectors.toList());
         }
-        if (gender == null) {
-            return employees;
+        if (gender != null) {
+            resultEmployees = resultEmployees.stream().filter(e -> e.gender().equalsIgnoreCase(gender)).collect(Collectors.toList());
         }
-        ArrayList<Employee> indexEmployees = new ArrayList<>();
-        for (Employee e : employees) {
-            if (e.gender().equalsIgnoreCase(gender)){
-                indexEmployees.add(e);
-            }
-        }
-        return indexEmployees;
+        return resultEmployees;
     }
 
     @DeleteMapping("/{id}")
