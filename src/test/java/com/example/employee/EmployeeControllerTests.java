@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -81,5 +83,17 @@ class EmployeeControllerTests {
                 .andExpect(jsonPath("$[0].age").value(maleEmployee.age()))
                 .andExpect(jsonPath("$[0].gender").value(maleEmployee.gender()))
                 .andExpect(jsonPath("$[0].salary").value(maleEmployee.salary()));
+    }
+
+    @Test
+    void should_return_employees_when_get_all_employees() throws Exception {
+        //Given
+        employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        employeeController.createEmployee(new Employee(null, "Lily Smith", 20, "Female", 5000.0));
+        MockHttpServletRequestBuilder request = get("/employees").contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
     }
 }
