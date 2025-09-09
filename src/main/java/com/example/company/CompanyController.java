@@ -1,6 +1,6 @@
 package com.example.company;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.employee.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +20,16 @@ public class CompanyController {
         Company newCampany = new Company(this.id++, company.name());
         companies.add(newCampany);
         return newCampany;
+    }
+
+    @GetMapping("/{id}")
+    public Company getCompany(@PathVariable int id) {
+        for (Company c : companies) {
+            if (c.id().equals(id)){
+                return c;
+            }
+        }
+        return null;
     }
 
     public void clear() {

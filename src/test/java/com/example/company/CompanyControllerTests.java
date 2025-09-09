@@ -43,4 +43,16 @@ class CompanyControllerTests {
                 .andExpect(jsonPath("$.name").value("Alibaba"));
     }
 
+    @Test
+    void should_return_company_when_get_company_with_id_exists() throws Exception {
+        //Given
+        Company company = new Company(null, "Alibaba");
+        Company newCompany = companyController.createCompanies(company);
+        MockHttpServletRequestBuilder request = get("/companies/" + newCompany.id()).contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(newCompany.id()))
+                .andExpect(jsonPath("$.name").value(newCompany.name()));
+    }
 }
