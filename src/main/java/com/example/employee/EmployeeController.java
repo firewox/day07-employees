@@ -19,7 +19,19 @@ public class EmployeeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee createEmployee(@RequestBody Employee employee) {
-        Employee newEmployee = employeeService.createEmployee(employee);
+        Employee newEmployee = new Employee(this.id++, employee.name(), employee.age(), employee.gender(), employee.salary());
+        employees.add(newEmployee);
+        Employee newEmployee1 = employeeService.createEmployee(employee);
         return newEmployee;
+    }
+
+    @GetMapping("/{id}")
+    public Employee getEmployee(@PathVariable int id) {
+        for (Employee e : employees) {
+            if (e.id().equals(id)){
+                return e;
+            }
+        }
+        return null;
     }
 }
