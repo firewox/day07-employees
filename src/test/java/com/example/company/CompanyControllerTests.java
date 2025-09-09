@@ -55,4 +55,23 @@ class CompanyControllerTests {
                 .andExpect(jsonPath("$.id").value(newCompany.id()))
                 .andExpect(jsonPath("$.name").value(newCompany.name()));
     }
+
+    @Test
+    void should_return_paged_companies_when_page_query_with_page_size_and_page_number() throws Exception {
+        //Given
+        companyController.createCompanies(new Company(null, "Alibaba"));
+        companyController.createCompanies(new Company(null, "ByteDance"));
+        companyController.createCompanies(new Company(null, "Huawei"));
+        companyController.createCompanies(new Company(null, "Tencent"));
+        companyController.createCompanies(new Company(null, "Zhipu"));
+        companyController.createCompanies(new Company(null, "DeepSeek"));
+        companyController.createCompanies(new Company(null, "RedNote"));
+        companyController.createCompanies(new Company(null, "DJI"));
+        int page_number = 1;
+        int page_size = 5;
+        MockHttpServletRequestBuilder request = get("/companies?" + "page=" + page_number + "&size=" + page_size).contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5));
+    }
 }
