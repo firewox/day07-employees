@@ -74,4 +74,22 @@ class CompanyControllerTests {
         mockMvc.perform(request).andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(5));
     }
+
+    @Test
+    void should_return_companies_when_get_all_companies() throws Exception {
+        //Given
+        companyController.createCompanies(new Company(null, "Alibaba"));
+        companyController.createCompanies(new Company(null, "ByteDance"));
+        companyController.createCompanies(new Company(null, "Huawei"));
+        companyController.createCompanies(new Company(null, "Tencent"));
+        companyController.createCompanies(new Company(null, "Zhipu"));
+        companyController.createCompanies(new Company(null, "DeepSeek"));
+        companyController.createCompanies(new Company(null, "RedNote"));
+        companyController.createCompanies(new Company(null, "DJI"));
+        MockHttpServletRequestBuilder request = get("/companies").contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(8));
+    }
 }
