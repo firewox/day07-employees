@@ -1,12 +1,12 @@
 package com.example.employee;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -48,11 +48,14 @@ public class EmployeeController {
     }
 
     @GetMapping()
-    public List<Employee> index(@RequestParam(required = false) String gender) {
+    public List<Employee> index(@RequestParam(required = false) String gender, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+        if (!Objects.isNull(page) && !Objects.isNull(size)) {
+            page = page <= 0 ? 1 : page;
+            return employees.stream().skip((page - 1) * size).limit(size).collect(Collectors.toList());
+        }
         if (gender == null) {
             return employees;
         }
-
         ArrayList<Employee> indexEmployees = new ArrayList<>();
         for (Employee e : employees) {
             if (e.gender().equalsIgnoreCase(gender)){

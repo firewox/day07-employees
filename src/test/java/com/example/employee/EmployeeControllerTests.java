@@ -9,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -127,5 +125,22 @@ class EmployeeControllerTests {
         MockHttpServletRequestBuilder request = delete("/employees/"+targetEmployee.id()).contentType(MediaType.APPLICATION_JSON);
         //When & Then
         mockMvc.perform(request).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_return_paged_employees_when_page_query_with_page_size_and_page_number() throws Exception {
+        //Given
+        employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        employeeController.createEmployee(new Employee(null, "Lily Smith", 32, "FeMale", 10000.0));
+        employeeController.createEmployee(new Employee(null, "Lily Smith", 32, "FeMale", 10000.0));
+        int page_number = 1;
+        int page_size = 5;
+        MockHttpServletRequestBuilder request = get("/employees?" + "page=" + page_number + "&size=" + page_size).contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(5));
     }
 }
