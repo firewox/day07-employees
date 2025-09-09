@@ -54,6 +54,12 @@ public class CompanyController {
         return company;
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        companies = companies.stream().filter(e -> !e.id().equals(id)).collect(Collectors.toList());
+    }
+
     public void clear() {
         companies.clear();
         id = 0;

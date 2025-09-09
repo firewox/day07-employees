@@ -110,4 +110,13 @@ class CompanyControllerTests {
                 .andExpect(jsonPath("$.id").value(oldCompany.id()))
                 .andExpect(jsonPath("$.name").value("ByteDance"));
     }
+
+    @Test
+    void should_return_not_content_when_delete_an_company() throws Exception {
+        //Given
+        Company targetCompany = companyController.createCompanies(new Company(null, "ByteDance"));
+        MockHttpServletRequestBuilder request = delete("/companies/"+targetCompany.id()).contentType(MediaType.APPLICATION_JSON);
+        //When & Then
+        mockMvc.perform(request).andExpect(status().isNoContent());
+    }
 }
