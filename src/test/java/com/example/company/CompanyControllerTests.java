@@ -92,4 +92,22 @@ class CompanyControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(8));
     }
+
+    @Test
+    void should_return_updated_companies_when_update_an_company_info() throws Exception {
+        //Given
+        Company oldCompany = companyController.createCompanies(new Company(null, "Alibaba"));
+        String requestBody = """
+                {
+                "id": %d,
+                "name": "ByteDance"
+                }
+                """.formatted(oldCompany.id());
+        MockHttpServletRequestBuilder request = put("/companies/"+oldCompany.id()).contentType(MediaType.APPLICATION_JSON).content(requestBody);
+        //When & Then
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(oldCompany.id()))
+                .andExpect(jsonPath("$.name").value("ByteDance"));
+    }
 }

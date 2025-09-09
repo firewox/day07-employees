@@ -45,6 +45,15 @@ public class CompanyController {
         return resultEmployees;
     }
 
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Company updateCompany(@RequestBody Company company) {
+        List<Company> companyList = companies.stream().filter(e -> !e.id().equals(company.id())).collect(Collectors.toList());
+        companyList.add(company);
+        companies = companyList;
+        return company;
+    }
+
     public void clear() {
         companies.clear();
         id = 0;
