@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -23,6 +24,16 @@ public class EmployeeController {
         employees.add(newEmployee);
         Employee newEmployee1 = employeeService.createEmployee(employee);
         return newEmployee;
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        List<Employee> employeeList = employees.stream().filter(e->{
+            return !e.id().equals(employee.id());
+        }).collect(Collectors.toList());
+        employeeList.add(employee);
+        return employee;
     }
 
     @GetMapping("/{id}")

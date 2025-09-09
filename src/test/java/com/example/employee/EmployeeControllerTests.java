@@ -11,8 +11,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -96,4 +95,30 @@ class EmployeeControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
     }
+
+    @Test
+    void should_return_updated_employees_when_update_an_employee_info() throws Exception {
+        //Given
+        Employee oldEmployee = employeeController.createEmployee(new Employee(null, "John Smith", 32, "Male", 5000.0));
+        String requestBody = """
+                {
+                "id": %s,
+                "name": "John Smith",
+                "age": 35,
+                "gender": "Male",
+                "salary": 10000.0
+                }
+                """.formatted(oldEmployee.id());
+        MockHttpServletRequestBuilder request = put("/employees/"+oldEmployee.id()).contentType(MediaType.APPLICATION_JSON).content(requestBody);
+        //When & Then
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(oldEmployee.id()))
+                .andExpect(jsonPath("$.age").value(35))
+                .andExpect(jsonPath("$.salary").value(10000.0))
+                .andExpect(jsonPath("$.name").value("John Smith"))
+                .andExpect(jsonPath("$.gender").value("Male"));
+    }
+
+
 }
